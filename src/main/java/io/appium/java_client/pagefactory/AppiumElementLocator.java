@@ -21,8 +21,11 @@ import static io.appium.java_client.pagefactory.ThrowableUtil.isInvalidSelectorR
 import static io.appium.java_client.pagefactory.ThrowableUtil.isStaleElementReferenceException;
 
 
+import com.dangdang.reader.client.core.DeviceOrientation;
+import com.dangdang.reader.client.core.DeviceUtils;
 import com.google.common.base.Function;
 
+import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.pagefactory.locator.CacheableLocator;
 
 import org.openqa.selenium.By;
@@ -133,11 +136,22 @@ class AppiumElementLocator implements CacheableLocator {
         return shouldCache;
     }
 
+    @Override
+    public By getLocator() {
+        return by;
+    }
+
+    @Override
+    public WebDriver getDriver() {
+        return (WebDriver) searchContext;
+    }
+
 
     // This function waits for not empty element list using all defined by
     private static class WaitingFunction implements Function<By, List<WebElement>> {
         private final SearchContext searchContext;
         Throwable foundStaleElementReferenceException;
+        int nCount=0;
 
         private WaitingFunction(SearchContext searchContext) {
             this.searchContext = searchContext;
@@ -151,7 +165,18 @@ class AppiumElementLocator implements CacheableLocator {
             foundStaleElementReferenceException = null;
 
             try {
+
+                //超过3次向上滑动页面
+                if(nCount>=3) {
+                    DeviceUtils.swip((AppiumDriver) searchContext, DeviceOrientation.UP);
+                    nCount=0;
+                }
+                else{
+                    nCount++;
+                }
+
                 result.addAll(searchContext.findElements(by));
+
             } catch (Throwable e) {
 
                 isRootCauseInvalidSelector = isInvalidSelectorRootCause(e);
@@ -176,6 +201,7 @@ class AppiumElementLocator implements CacheableLocator {
             }
 
             if (result.size() > 0) {
+                nCount=0;
                 return result;
             } else {
                 return null;
