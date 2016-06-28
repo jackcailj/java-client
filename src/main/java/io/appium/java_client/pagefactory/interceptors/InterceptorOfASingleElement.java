@@ -73,11 +73,11 @@ public abstract class InterceptorOfASingleElement implements MethodInterceptor {
             logger.error("异常："+LoggerUtils.getStrackTrace(e));
 
             //截图并保存
-            TakesScreenshot takesScreenshot = (TakesScreenshot) driver;
+            /*TakesScreenshot takesScreenshot = (TakesScreenshot) driver;
             File screenShot =takesScreenshot.getScreenshotAs(OutputType.FILE);
             String screenShotFullName = LoggerUtils.getLogsFile()+"_"+System.currentTimeMillis()+".jpg";
             FileUtils.copyFile(screenShot, new File(screenShotFullName));
-
+*/
             throw e;
         }
 

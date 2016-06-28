@@ -64,11 +64,11 @@ public abstract class InterceptorOfAListOfElements implements MethodInterceptor 
         }catch (Exception e){
             logger.error("异常："+ LoggerUtils.getStrackTrace(e));
 
-            //截图并保存
+            /*//截图并保存
             TakesScreenshot takesScreenshot = (TakesScreenshot) locator.getDriver();
             File screenShot =takesScreenshot.getScreenshotAs(OutputType.FILE);
             String screenShotFullName = LoggerUtils.getLogsFile()+"_"+System.currentTimeMillis()+".jpg";
-            FileUtils.copyFile(screenShot, new File(screenShotFullName));
+            FileUtils.copyFile(screenShot, new File(screenShotFullName));*/
 
             throw e;
         }
