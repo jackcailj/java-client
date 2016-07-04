@@ -48,4 +48,17 @@ public class ContentMappedBy extends By {
             + "- native content: \"" + nativeBy.toString() + "\" \n"
             + "- html content: \"" + defaultBy.toString() + "\"";
     }
+
+    public String getByString(ContentType contentType){
+        By by = map.get(contentType);
+        String byString = by.toString();
+
+        int index = byString.indexOf(":");
+        return byString.substring(index+1,byString.length());
+    }
+
+
+    public By getBy(ContentType contentType){
+        return map.get(contentType);
+    }
 }

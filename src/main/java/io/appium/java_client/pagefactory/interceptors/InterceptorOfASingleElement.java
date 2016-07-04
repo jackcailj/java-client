@@ -16,7 +16,12 @@
 
 package io.appium.java_client.pagefactory.interceptors;
 
+import com.dangdang.reader.client.core.DeviceUtils;
 import com.dangdang.reader.client.core.LoggerUtils;
+import io.appium.java_client.AppiumDriver;
+import io.appium.java_client.MobileBy;
+import io.appium.java_client.pagefactory.bys.ContentMappedBy;
+import io.appium.java_client.pagefactory.bys.ContentType;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
 import org.apache.commons.io.FileUtils;
@@ -63,8 +68,11 @@ public abstract class InterceptorOfASingleElement implements MethodInterceptor {
 
         try{
 
-            By by = locator.getLocator();
+            ContentMappedBy by = (ContentMappedBy) locator.getLocator();
             logger.info("元素："+by.toString()+"\r\n执行操作："+method.getName());
+
+
+            DeviceUtils.iosScrollToVisible((AppiumDriver) locator.getDriver(),by);
 
             WebElement realElement = locator.findElement();
             return getObject(realElement, method, args);

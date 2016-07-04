@@ -18,11 +18,13 @@ package io.appium.java_client.pagefactory;
 
 import io.appium.java_client.MobileElement;
 import io.appium.java_client.pagefactory.interceptors.InterceptorOfASingleElement;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.pagefactory.ElementLocator;
 
 import java.lang.reflect.Method;
+import java.util.HashMap;
 
 /**
  * Intercepts requests to {@link MobileElement}.

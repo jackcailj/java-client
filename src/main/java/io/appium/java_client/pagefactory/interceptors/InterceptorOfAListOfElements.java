@@ -16,7 +16,11 @@
 
 package io.appium.java_client.pagefactory.interceptors;
 
+import com.dangdang.reader.client.core.DeviceUtils;
 import com.dangdang.reader.client.core.LoggerUtils;
+import io.appium.java_client.AppiumDriver;
+import io.appium.java_client.MobileBy;
+import io.appium.java_client.pagefactory.bys.ContentMappedBy;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
 import org.apache.commons.io.FileUtils;
@@ -58,8 +62,11 @@ public abstract class InterceptorOfAListOfElements implements MethodInterceptor 
             By by = locator.getLocator();
             logger.info("元素："+by.toString()+"\r\n执行操作："+method.getName());
 
+            DeviceUtils.iosScrollToVisible((AppiumDriver) locator.getDriver(), (ContentMappedBy) by);
+
             ArrayList<WebElement> realElements = new ArrayList<WebElement>();
             realElements.addAll(locator.findElements());
+
             return getObject(realElements, method, args);
         }catch (Exception e){
             logger.error("异常："+ LoggerUtils.getStrackTrace(e));

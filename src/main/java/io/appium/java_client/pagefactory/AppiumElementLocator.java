@@ -26,6 +26,8 @@ import com.dangdang.reader.client.core.DeviceUtils;
 import com.google.common.base.Function;
 
 import io.appium.java_client.AppiumDriver;
+import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.pagefactory.locator.CacheableLocator;
 
 import org.openqa.selenium.By;
@@ -37,6 +39,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.FluentWait;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -166,15 +169,15 @@ class AppiumElementLocator implements CacheableLocator {
 
             try {
 
-                //超过3次向上滑动页面
-                if(nCount>=3) {
-                    DeviceUtils.swip((AppiumDriver) searchContext, DeviceOrientation.UP);
-                    nCount=0;
+                if(searchContext instanceof AndroidDriver) {
+                    //超过3次向上滑动页面
+                    if (nCount >= 3) {
+                        DeviceUtils.swip((AppiumDriver) searchContext, DeviceOrientation.UP);
+                        nCount = 0;
+                    } else {
+                        nCount++;
+                    }
                 }
-                else{
-                    nCount++;
-                }
-
                 result.addAll(searchContext.findElements(by));
 
             } catch (Throwable e) {
