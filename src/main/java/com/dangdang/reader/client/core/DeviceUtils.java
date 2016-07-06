@@ -1,8 +1,6 @@
 package com.dangdang.reader.client.core;
 
-import io.appium.java_client.AppiumDriver;
-import io.appium.java_client.MobileBy;
-import io.appium.java_client.TouchAction;
+import io.appium.java_client.*;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidKeyCode;
 import io.appium.java_client.ios.IOSDriver;
@@ -14,6 +12,11 @@ import org.openqa.selenium.*;
 
 import java.io.File;
 import java.net.MalformedURLException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 
 /**
  * Created by cailianjie on 2016-6-2.
@@ -68,17 +71,77 @@ public class DeviceUtils {
     /*
     只有Ios、使用uiautomator方式时,滚动,将元素显示到屏幕上。ß
      */
-    public static void iosScrollToVisible(AppiumDriver driver, ContentMappedBy by){
-        //ios设备,滚动到元素位置。
-        if(driver instanceof IOSDriver) {
-            ContentMappedBy uiAutomationBy = (ContentMappedBy) by;
-            By nativeBy = uiAutomationBy.getBy(ContentType.NATIVE_MOBILE_SPECIFIC);
-            if (nativeBy instanceof MobileBy.ByIosUIAutomation) {
-                logger.info("执行scrollToVisible命令");
-                JavascriptExecutor js = (JavascriptExecutor) driver;
-                js.executeScript("UIATarget.localTarget().frontMostApp().mainWindow()" + uiAutomationBy.getByString(ContentType.NATIVE_MOBILE_SPECIFIC) + ".scrollToVisible()");
+    public static MobileElement iosScrollToVisible(ElementLocatorEx locatorEx, final MobileElement element){
+
+        MobileElement returnElement=element;
+
+        try {
+            AppiumDriver driver= (AppiumDriver) locatorEx.getDriver();
+            //ios设备,滚动到元素位置。
+            if (driver instanceof IOSDriver) {
+                if(!element.isDisplayed()){
+
+                    String parentString = getScrollElementUIAutomationString(locatorEx);
+                    JavascriptExecutor js = (JavascriptExecutor) driver;
+                    js.executeScript(parentString);
+
+                    returnElement = (MobileElement) locatorEx.findElement();
+
+                }
+
+
+                /*ContentMappedBy uiAutomationBy = (ContentMappedBy) by;
+                By nativeBy = uiAutomationBy.getBy(ContentType.NATIVE_MOBILE_SPECIFIC);
+                if (nativeBy instanceof MobileBy.ByIosUIAutomation) {
+                    logger.info("执行scrollToVisible命令");
+                    JavascriptExecutor js = (JavascriptExecutor) driver;
+                    js.executeScript("UIATarget.localTarget().frontMostApp().mainWindow()" + uiAutomationBy.getByString(ContentType.NATIVE_MOBILE_SPECIFIC) + ".scrollToVisible()");
+                }
+*/
+            }
+            else{
+
+                /*JavascriptExecutor js = (JavascriptExecutor) driver;
+                HashMap scrollObject = new HashMap();
+                scrollObject.put("direction", "down");
+                js.executeScript("mobile: scroll", scrollObject);*/
+/*
+
+                Map<String,String> arg= new HashMap<String, String>() {{ put("element", element.getId()); }};
+
+                JavascriptExecutor javascriptExecutor = (JavascriptExecutor) driver;
+                javascriptExecutor.executeScript("mobile: scroll", arg);
+*/
+
+                //element.swipe(SwipeElementDirection.DOWN,1000);
+
+            }
+        }catch (Exception e){
+
+        }
+
+        return returnElement;
+    }
+
+
+    /*
+        获取locator中父层级路径,拼装成uiautomation滚动语句。
+        目前只支持了cells,以后发现继续扩展。
+     */
+    public static String getScrollElementUIAutomationString(ElementLocatorEx locatorEx){
+        ContentMappedBy uiAutomationBy = (ContentMappedBy) locatorEx.getLocator();
+        By nativeBy = uiAutomationBy.getBy(ContentType.NATIVE_MOBILE_SPECIFIC);
+        if (nativeBy instanceof MobileBy.ByIosUIAutomation) {
+
+            Matcher matcher = Pattern.compile("(^.*?cells().*?)\\.").matcher(uiAutomationBy.getByString(ContentType.NATIVE_MOBILE_SPECIFIC));
+
+            if(matcher.find()){
+                String scrollString = "UIATarget.localTarget().frontMostApp().mainWindow()"+matcher.group(1)+".scrollToVisible()";
+                return scrollString;
             }
         }
+
+        return "UIATarget.localTarget().frontMostApp().mainWindow()";
     }
 
 

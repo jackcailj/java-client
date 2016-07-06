@@ -20,6 +20,7 @@ import com.dangdang.reader.client.core.DeviceUtils;
 import com.dangdang.reader.client.core.LoggerUtils;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileBy;
+import io.appium.java_client.MobileElement;
 import io.appium.java_client.pagefactory.bys.ContentMappedBy;
 import io.appium.java_client.pagefactory.bys.ContentType;
 import net.sf.cglib.proxy.MethodInterceptor;
@@ -72,9 +73,12 @@ public abstract class InterceptorOfASingleElement implements MethodInterceptor {
             logger.info("元素："+by.toString()+"\r\n执行操作："+method.getName());
 
 
-            DeviceUtils.iosScrollToVisible((AppiumDriver) locator.getDriver(),by);
+
 
             WebElement realElement = locator.findElement();
+
+            realElement = DeviceUtils.iosScrollToVisible(locator, (MobileElement) realElement);
+
             return getObject(realElement, method, args);
 
         }catch (Exception e){

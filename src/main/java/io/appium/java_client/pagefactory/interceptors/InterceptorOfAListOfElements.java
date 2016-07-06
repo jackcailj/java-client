@@ -62,10 +62,12 @@ public abstract class InterceptorOfAListOfElements implements MethodInterceptor 
             By by = locator.getLocator();
             logger.info("元素："+by.toString()+"\r\n执行操作："+method.getName());
 
-            DeviceUtils.iosScrollToVisible((AppiumDriver) locator.getDriver(), (ContentMappedBy) by);
+
 
             ArrayList<WebElement> realElements = new ArrayList<WebElement>();
             realElements.addAll(locator.findElements());
+
+            //DeviceUtils.iosScrollToVisible((AppiumDriver) locator.getDriver(), (ContentMappedBy) by);
 
             return getObject(realElements, method, args);
         }catch (Exception e){
