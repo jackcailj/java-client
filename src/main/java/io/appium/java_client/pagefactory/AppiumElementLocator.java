@@ -146,7 +146,14 @@ class AppiumElementLocator implements CacheableLocator {
 
     @Override
     public WebDriver getDriver() {
-        return (WebDriver) searchContext;
+        if(searchContext instanceof WebDriver) {
+            return (WebDriver) searchContext;
+        }
+        else if(searchContext instanceof Widget){
+            return ((Widget)searchContext).getWrappedDriver();
+        }
+
+        return null;
     }
 
 
@@ -155,6 +162,8 @@ class AppiumElementLocator implements CacheableLocator {
         private final SearchContext searchContext;
         Throwable foundStaleElementReferenceException;
         int nCount=0;
+        int upTimes=0;
+        boolean swipUp =true;
 
         private WaitingFunction(SearchContext searchContext) {
             this.searchContext = searchContext;
@@ -171,8 +180,27 @@ class AppiumElementLocator implements CacheableLocator {
 
                 if(searchContext instanceof AndroidDriver) {
                     //超过3次向上滑动页面
-                    if (nCount >= 3) {
-                        DeviceUtils.swip((AppiumDriver) searchContext, DeviceOrientation.UP);
+                    if (nCount >=3) {
+
+                        if(swipUp) {
+                            DeviceUtils.swip((AppiumDriver) searchContext, DeviceOrientation.UP);
+                            upTimes++;
+
+                            if(upTimes==4){
+                                swipUp=false;
+                            }
+                        }
+
+                        if(swipUp ==false){
+                            DeviceUtils.swip((AppiumDriver) searchContext, DeviceOrientation.DOWN);
+                            upTimes--;
+                            if(upTimes==0){
+                                swipUp=true;
+                            }
+                        }
+
+
+
                         nCount = 0;
                     } else {
                         nCount++;
@@ -205,6 +233,7 @@ class AppiumElementLocator implements CacheableLocator {
 
             if (result.size() > 0) {
                 nCount=0;
+                upTimes=0;
                 return result;
             } else {
                 return null;
