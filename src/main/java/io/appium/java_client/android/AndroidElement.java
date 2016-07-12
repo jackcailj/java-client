@@ -55,4 +55,9 @@ public class AndroidElement extends MobileElement
         builder.put("id", getId()).put("value", new String[] {value});
         execute(MobileCommand.REPLACE_VALUE, builder.build());
     }
+
+    @Override
+    public void setValue(String value) {
+        replaceValue(value);
+    }
 }

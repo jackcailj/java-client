@@ -106,4 +106,6 @@ public abstract class MobileElement
     @Override public List<MobileElement> findElementsByAccessibilityId(String using) {
         return super.findElementsByAccessibilityId(using);
     }
+
+    public abstract void setValue(String value);
 }

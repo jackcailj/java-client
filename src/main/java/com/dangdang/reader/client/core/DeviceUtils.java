@@ -9,6 +9,7 @@ import io.appium.java_client.pagefactory.bys.ContentType;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.*;
+import org.openqa.selenium.interactions.DoubleClickAction;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -99,7 +100,9 @@ public class DeviceUtils {
                 }
 */
             }
-            else{
+            else {
+
+
 
                 /*JavascriptExecutor js = (JavascriptExecutor) driver;
                 HashMap scrollObject = new HashMap();
@@ -116,6 +119,23 @@ public class DeviceUtils {
                 //element.swipe(SwipeElementDirection.DOWN,1000);
 
             }
+
+            //避免被顶部、底部标题栏挡住，移到中间
+            Dimension screenSize = driver.manage().window().getSize();
+            Point location = returnElement.getLocation();
+            Dimension elementSzie = returnElement.getSize();
+
+            //屏幕下方低端，需要上移到中间
+            Double bottomLine =screenSize.getHeight()*(3.0/4.0);
+            Double upLine =screenSize.getHeight()*(1.0/4.0);
+            if(location.getY()>bottomLine){
+                driver.swipe(screenSize.getWidth()/2,bottomLine.intValue(),screenSize.getWidth()/2,bottomLine.intValue()-(location.getY()-screenSize.getHeight()/2),1000);
+            }
+            else if(location.getY()<upLine){//在顶端，往下滑。
+                driver.swipe(screenSize.getWidth()/2,upLine.intValue(),screenSize.getWidth()/2,upLine.intValue()+(screenSize.getHeight()/2-location.getY()),1000);
+            }
+
+
         }catch (Exception e){
 
         }

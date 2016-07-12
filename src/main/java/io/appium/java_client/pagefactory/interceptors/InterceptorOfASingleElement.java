@@ -71,7 +71,7 @@ public abstract class InterceptorOfASingleElement implements MethodInterceptor {
 
             ContentMappedBy by = (ContentMappedBy) locator.getLocator();
             logger.info("元素："+by.toString()+"\r\n执行操作："+method.getName());
-
+            //logger.info("参数："+args==null?"无":args);
 
 
 
@@ -79,7 +79,11 @@ public abstract class InterceptorOfASingleElement implements MethodInterceptor {
 
             realElement = DeviceUtils.iosScrollToVisible(locator, (MobileElement) realElement);
 
-            return getObject(realElement, method, args);
+            Object result = getObject(realElement, method, args);
+
+            logger.info("结果："+(result==null?"无":result.toString()));
+
+            return result;
 
         }catch (Exception e){
             logger.error("异常："+LoggerUtils.getStrackTrace(e));
