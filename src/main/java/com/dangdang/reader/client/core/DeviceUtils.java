@@ -124,16 +124,17 @@ public class DeviceUtils {
             Dimension screenSize = driver.manage().window().getSize();
             Point location = returnElement.getLocation();
             Dimension elementSzie = returnElement.getSize();
+            Point elementCenter = new Point(location.getX()+elementSzie.getWidth()/2,location.getY()+elementSzie.getHeight()/2);
 
             //屏幕下方低端，需要上移到中间
             Double bottomLine =screenSize.getHeight()*(9.0/10.0);
             Double upLine =screenSize.getHeight()*(1.0/10.0);
-            if(location.getY()>bottomLine){
+            if(elementCenter.getY()>bottomLine){
                 logger.info("元素位于屏幕下方,可能被下方工具栏遮挡,移到中间");
                 driver.swipe(screenSize.getWidth()/2,bottomLine.intValue(),screenSize.getWidth()/2,bottomLine.intValue()-(location.getY()-screenSize.getHeight()/2),1000);
                 //returnElement = (MobileElement) locatorEx.findElement();
             }
-            else if(location.getY()<upLine){//在顶端，往下滑。
+            else if(elementCenter.getY()<upLine){//在顶端，往下滑。
                 logger.info("元素位于屏幕上方,可能被下方工具栏遮挡,移到中间");
                 driver.swipe(screenSize.getWidth()/2,upLine.intValue(),screenSize.getWidth()/2,upLine.intValue()+(screenSize.getHeight()/2-location.getY()),1000);
                 //returnElement = (MobileElement) locatorEx.findElement();
